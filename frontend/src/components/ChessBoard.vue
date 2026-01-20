@@ -19,6 +19,15 @@ const isDark = (n: number) => {
     <span class="pawns pawn6">&#9823;</span>
     <span class="pawns pawn7">&#9823;</span>
     <span class="pawns pawn8">&#9823;</span>
+
+    <span class="ryl-pcs king">&#9818;</span>
+    <span class="ryl-pcs queen">&#9819;</span>
+    <span class="ryl-pcs rook1">&#9820;</span>
+    <span class="ryl-pcs rook2">&#9820;</span>
+    <span class="ryl-pcs bishop1">&#9821;</span>
+    <span class="ryl-pcs bishop2">&#9821;</span>
+    <span class="ryl-pcs knight1">&#9822;</span>
+    <span class="ryl-pcs knight2">&#9822;</span>
    </div>
    <div class="white-pieces">
     <span class="w-pawns w-pawn1">&#9823;</span>
@@ -29,6 +38,15 @@ const isDark = (n: number) => {
     <span class="w-pawns w-pawn6">&#9823;</span>
     <span class="w-pawns w-pawn7">&#9823;</span>
     <span class="w-pawns w-pawn8">&#9823;</span>
+
+    <span class="w-ryl-pcs w-king">&#9818;</span>
+    <span class="w-ryl-pcs w-queen">&#9819;</span>
+    <span class="w-ryl-pcs w-rook1">&#9820;</span>
+    <span class="w-ryl-pcs w-rook2">&#9820;</span>
+    <span class="w-ryl-pcs w-bishop1">&#9821;</span>
+    <span class="w-ryl-pcs w-bishop2">&#9821;</span>
+    <span class="w-ryl-pcs w-knight1">&#9822;</span>
+    <span class="w-ryl-pcs w-knight2">&#9822;</span>
    </div>
 </template>
 
@@ -55,6 +73,7 @@ const isDark = (n: number) => {
 .square.dark {
   background: #b58863;
 }
+/* Adjusted positions by 5.7 for better vertical alignment */
 .pawn1 { left: 29.3rem }
 .pawn2 { left: 35rem; }
 .pawn3 { left: 40.7rem; }
@@ -64,10 +83,26 @@ const isDark = (n: number) => {
 .pawn7 { left: 63.3rem; }
 .pawn8 { left: 69rem; }
 
+.queen { left: 45.9rem; }
+.bishop1 { left: 40.2rem; }
+.knight1 { left: 34.5rem; }
+.rook1 { left: 28.8rem; }
+
+.king { left: 51.6rem; }
+.rook2 { left: 68.7%; }
+.bishop2 { left: 57.3rem; }
+.knight2 { left: 63rem; }
+
 .pawns {
   position: absolute;
   font-size: 3rem;
   top: 9.2rem;
+}
+
+.ryl-pcs {
+  position: absolute;
+  font-size: 4rem;
+  top: 2.7rem;
 }
 .w-pawn1 { left: 29.3rem }
 .w-pawn2 { left: 35rem; }
@@ -77,10 +112,28 @@ const isDark = (n: number) => {
 .w-pawn6 { left: 57.6rem; }
 .w-pawn7 { left: 63.3rem; }
 .w-pawn8 { left: 69rem; }
+
+.w-queen { left: 45.9rem; }
+.w-bishop1 { left: 40.2rem; }
+.w-knight1 { left: 34.5rem; }
+.w-rook1 { left: 28.8rem; }
+
+.w-king { left: 51.6rem; }
+.w-rook2 { left: 68.7%; }
+.w-bishop2 { left: 57.3rem; }
+.w-knight2 { left: 63rem; }
+
 .w-pawns {
   position: absolute;
   font-size: 3rem;
   top: 37.2rem;
+  color: white;
+}
+
+.w-ryl-pcs {
+  position: absolute;
+  font-size: 4rem;
+  top: 42.5rem;
   color: white;
 }
 </style>
