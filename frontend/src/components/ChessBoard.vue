@@ -43,12 +43,12 @@ const pieceAt = (index: number) => {
 
 const pieceSymbol = (piece: Piece) => {
   const symbols: Record<string, string> = {
-    'pawn': piece.color === 'white' ? '♙' : '♟', // Pawn
-    'rook': piece.color === 'white' ? '♖' : '♜', // Rook
-    'knight': piece.color === 'white' ? '♘' : '♞', // Knight
-    'bishop': piece.color === 'white' ? '♗' : '♝', // Bishop
-    'queen': piece.color === 'white' ? '♕' : '♛', // Queen
-    'king': piece.color === 'white' ? '♔' : '♚', // King
+    'p': piece.color === 'white' ? '♙' : '♟', // Pawn
+    'r': piece.color === 'white' ? '♖' : '♜', // Rook
+    'n': piece.color === 'white' ? '♘' : '♞', // Knight
+    'b': piece.color === 'white' ? '♗' : '♝', // Bishop
+    'q': piece.color === 'white' ? '♕' : '♛', // Queen
+    'k': piece.color === 'white' ? '♔' : '♚', // King
   };
   return symbols[piece.type];
 };
@@ -58,6 +58,7 @@ const pieceSymbol = (piece: Piece) => {
    <div class="chess-board-container">
      <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index) }">
       <span v-if="pieceAt(index)" class="piece" :class="pieceAt(index)!.color">{{ pieceSymbol(pieceAt(index)!) }}</span>
+      <small class="coord">{{ indexToSquare(index) }}</small>
      </div>
 
    </div>
@@ -115,10 +116,11 @@ const pieceSymbol = (piece: Piece) => {
   top: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8)0;
 }
 
 .square {
+  position: relative;
   background: #f0d9b5;
   display: flex;
   align-items: center;
@@ -134,12 +136,21 @@ const pieceSymbol = (piece: Piece) => {
   cursor: pointer;
   font-size: 3.5rem;
   user-select: none;
+  z-index: 1;
 }
 .piece.white {
   color: white;
 }
 .piece.black {
   color: black;
+}
+
+.coord {
+  position: absolute;
+  font-size: 0.6rem;
+  color: red;
+  bottom: 2px;
+  right: 2px;
 }
 
 
