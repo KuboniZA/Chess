@@ -1,16 +1,68 @@
 <script setup lang="ts">
-const isDark = (n: number) => {
-  const row = Math.floor((n - 1) / 8);
-  const col = (n - 1) % 8;
+import { ref, onMounted } from 'vue';
+
+type Piece = {
+  type: string;
+  color: 'white' | 'black';
+  position: string;
+};
+
+const pieces = ref<Piece[]>([]);
+
+const fetchPieces = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/board');
+    const data = await response.json();
+    pieces.value = data.board_state;
+    console.log('Fetched pieces:', pieces.value);
+  } catch (error) {
+    console.error('Error fetching pieces:', error);
+  }
+};
+
+onMounted(() => {
+  fetchPieces();
+});
+
+const isDark = (index: number) => {
+  const row = Math.floor(index / 8);
+  const col = index % 8;
   return (row + col) % 2 === 1;
 };
+
+const indexToSquare = (index: number) => {
+  const file = String.fromCharCode(97 + (index % 8)); // 'a' to 'h'
+  const rank = 8 - Math.floor(index / 8); // '1' to '8'
+  return `${file}${rank}`;
+};
+
+const pieceAt = (index: number) => {
+  const square = indexToSquare(index);
+  return pieces.value.find(piece => piece.position === square);
+};
+
+const pieceSymbol = (piece: Piece) => {
+  const symbols: Record<string, string> = {
+    'pawn': piece.color === 'white' ? '♙' : '♟', // Pawn
+    'rook': piece.color === 'white' ? '♖' : '♜', // Rook
+    'knight': piece.color === 'white' ? '♘' : '♞', // Knight
+    'bishop': piece.color === 'white' ? '♗' : '♝', // Bishop
+    'queen': piece.color === 'white' ? '♕' : '♛', // Queen
+    'king': piece.color === 'white' ? '♔' : '♚', // King
+  };
+  return symbols[piece.type];
+};
 </script>
+
 <template>
    <div class="chess-board-container">
-     <div v-for="n in 64" :key="n" class="square" :class="{ dark: isDark(n) }"></div>
+     <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index) }">
+      <span v-if="pieceAt(index)" class="piece" :class="pieceAt(index)!.color">{{ pieceSymbol(pieceAt(index)!) }}</span>
+     </div>
+
    </div>
 
-   <div class="black-pieces">
+   <!-- <div class="black-pieces">
     <span class="pawns pawn1">&#9823;</span>
     <span class="pawns pawn2">&#9823;</span>
     <span class="pawns pawn3">&#9823;</span>
@@ -47,7 +99,7 @@ const isDark = (n: number) => {
     <span class="w-ryl-pcs w-bishop2">&#9821;</span>
     <span class="w-ryl-pcs w-knight1">&#9822;</span>
     <span class="w-ryl-pcs w-knight2">&#9822;</span>
-   </div>
+   </div> -->
 </template>
 
 <style scoped>
@@ -68,13 +120,31 @@ const isDark = (n: number) => {
 
 .square {
   background: #f0d9b5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
 }
 
 .square.dark {
   background: #b58863;
 }
+
+.piece {
+  cursor: pointer;
+  font-size: 3.5rem;
+  user-select: none;
+}
+.piece.white {
+  color: white;
+}
+.piece.black {
+  color: black;
+}
+
+
 /* Adjusted positions by 5.7 for better vertical alignment */
-.pawn1 { left: 29.3rem }
+/* .pawn1 { left: 29.3rem }
 .pawn2 { left: 35rem; }
 .pawn3 { left: 40.7rem; }
 .pawn4 { left: 46.2rem; }
@@ -135,5 +205,5 @@ const isDark = (n: number) => {
   font-size: 4rem;
   top: 42.5rem;
   color: white;
-}
+} */
 </style>
