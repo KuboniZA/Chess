@@ -36,6 +36,12 @@ def reset_game():
     game = ChessEngine()
     return jsonify({'status': 'success', 'board_state': game.get_board_state()})
 
+@app.route('/reset-captured', methods=['POST'])
+def reset_captured():
+    global captured_pieces
+    captured_pieces = []
+    return jsonify({'status': 'success'})
+
 @app.route('/is_game_over', methods=['GET'])
 def is_game_over():
     return jsonify({'is_game_over': game.is_game_over()})

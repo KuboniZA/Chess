@@ -128,6 +128,7 @@ const resetPieces = async () => {
       pieces.value = data.board_state;
       console.log('Board reset:', pieces.value);
       turn.value = 'White'; // Reset turn to White
+      childRef.value?.resetCapturedPieces();
     } else {
       console.error('Error resetting board:', data.message);
     }

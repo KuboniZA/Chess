@@ -19,11 +19,26 @@ const fetchCapturedPieces = async () => {
   }
 };
 
+const resetCapturedPieces = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/reset-captured', {
+      method: 'POST',
+    });
+    const data = await response.json();
+    console.log('Reset captured pieces:', data);
+    whiteCapturedPieces.value = [];
+    blackCapturedPieces.value = [];
+  } catch (error) {
+    console.error('Error resetting captured pieces:', error);
+  }
+};
+
 onMounted(() => {
   fetchCapturedPieces();
 });
 defineExpose({
   fetchCapturedPieces,
+  resetCapturedPieces
 });
 
 </script>
