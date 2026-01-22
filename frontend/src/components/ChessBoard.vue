@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, } from 'vue';
 import InvalidMove from './InvalidMove.vue';
+import CapturedPieces from './CapturedPieces.vue';
 
 // Piece visibility and positions
 
@@ -87,6 +88,7 @@ const onSquareClick = async (index: number) => {
 
 const turn = ref<'White' | 'Black'>('White');
 const errorMessage = ref<string | null>(null);
+const childRef = ref<InstanceType<typeof CapturedPieces> | null>(null);
 
 const movePiece = async (from: string, to: string) => {
   const move = `${from}${to}`;
@@ -104,6 +106,8 @@ const movePiece = async (from: string, to: string) => {
     // Update the board state
     pieces.value = data.board_state;
     turn.value = turn.value === 'White' ? 'Black' : 'White';
+    childRef.value?.fetchCapturedPieces();
+    console.log('Move successful:', pieces.value);
   } else {
     // Handle invalid move
     console.error('Invalid move:', data.message);
@@ -135,6 +139,7 @@ const resetPieces = async () => {
 
 <template>
   <InvalidMove v-if="errorMessage" :message="errorMessage" @close="errorMessage = null" />
+  <CapturedPieces ref="childRef"/>
    <div class="chess-board-container">
      <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index), selected: selectedSquare === indexToSquare(index) }" @click="onSquareClick(index)">
       <span v-if="pieceAt(index)" class="piece" :class="pieceAt(index)!.color">{{ pieceSymbol(pieceAt(index)!) }}</span>

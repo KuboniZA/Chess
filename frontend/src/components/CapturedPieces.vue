@@ -22,6 +22,10 @@ const fetchCapturedPieces = async () => {
 onMounted(() => {
   fetchCapturedPieces();
 });
+defineExpose({
+  fetchCapturedPieces,
+});
+
 </script>
 
 <template>
