@@ -60,7 +60,7 @@ const pieceSymbol = (piece: Piece) => {
 
 const selectedPiece = ref<Piece | null>(null);
 const selectedSquare = ref<string | null>(null);
-const turn = ref<'White' | 'Black'>('White');
+
 
 const onSquareClick = async (index: number) => {
   const square = indexToSquare(index);
@@ -83,9 +83,9 @@ const onSquareClick = async (index: number) => {
   await movePiece(selectedSquare.value, square);
   selectedPiece.value = null;
   selectedSquare.value = null;
-  turn.value = turn.value === 'White' ? 'Black' : 'White';
 };
 
+const turn = ref<'White' | 'Black'>('White');
 const errorMessage = ref<string | null>(null);
 
 const movePiece = async (from: string, to: string) => {
@@ -103,6 +103,7 @@ const movePiece = async (from: string, to: string) => {
   if (data.status === 'success') {
     // Update the board state
     pieces.value = data.board_state;
+    turn.value = turn.value === 'White' ? 'Black' : 'White';
   } else {
     // Handle invalid move
     console.error('Invalid move:', data.message);
