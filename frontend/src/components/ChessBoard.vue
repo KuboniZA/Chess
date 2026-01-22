@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, } from 'vue';
 
 // Piece visibility and positions
 
@@ -59,6 +59,7 @@ const pieceSymbol = (piece: Piece) => {
 
 const selectedPiece = ref<Piece | null>(null);
 const selectedSquare = ref<string | null>(null);
+const turn = ref<'White' | 'Black'>('White');
 
 const onSquareClick = async (index: number) => {
   const square = indexToSquare(index);
@@ -81,6 +82,7 @@ const onSquareClick = async (index: number) => {
   await movePiece(selectedSquare.value, square);
   selectedPiece.value = null;
   selectedSquare.value = null;
+  turn.value = turn.value === 'White' ? 'Black' : 'White';
 };
 
 const movePiece = async (from: string, to: string) => {
@@ -114,6 +116,7 @@ const resetPieces = async () => {
     if (data.status === 'success') {
       pieces.value = data.board_state;
       console.log('Board reset:', pieces.value);
+      turn.value = 'White'; // Reset turn to White
     } else {
       console.error('Error resetting board:', data.message);
     }
@@ -130,6 +133,7 @@ const resetPieces = async () => {
       <!-- <small class="coord">{{ indexToSquare(index) }}</small> -->
      </div>
    </div>
+   <h2>Current Turn: {{ turn }}</h2>
    <button class="refresh-btn" @click="resetPieces">Refresh Board</button>
 </template>
 
