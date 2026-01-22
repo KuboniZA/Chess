@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, } from 'vue';
+import InvalidMove from './InvalidMove.vue';
 
 // Piece visibility and positions
 
@@ -85,6 +86,8 @@ const onSquareClick = async (index: number) => {
   turn.value = turn.value === 'White' ? 'Black' : 'White';
 };
 
+const errorMessage = ref<string | null>(null);
+
 const movePiece = async (from: string, to: string) => {
   const move = `${from}${to}`;
 
@@ -103,6 +106,8 @@ const movePiece = async (from: string, to: string) => {
   } else {
     // Handle invalid move
     console.error('Invalid move:', data.message);
+    errorMessage.value = data.message;
+
   }
 };
 
@@ -128,6 +133,7 @@ const resetPieces = async () => {
 </script>
 
 <template>
+  <InvalidMove v-if="errorMessage" :message="errorMessage" @close="errorMessage = null" />
    <div class="chess-board-container">
      <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index), selected: selectedSquare === indexToSquare(index) }" @click="onSquareClick(index)">
       <span v-if="pieceAt(index)" class="piece" :class="pieceAt(index)!.color">{{ pieceSymbol(pieceAt(index)!) }}</span>
