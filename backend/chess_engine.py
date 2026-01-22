@@ -25,6 +25,31 @@ class ChessEngine:
                 return False
         except ValueError:
             return False
+        
+    def get_captured_pieces(self):
+        captured = []
+        starting_pieces = {
+            'P': 8, 'R': 2, 'N': 2, 'B': 2, 'Q': 1, 'K': 1,
+            'p': 8, 'r': 2, 'n': 2, 'b': 2, 'q': 1, 'k': 1
+        }
+        current_pieces = {}
+
+        for piece in self.board.piece_map().values():
+            symbol = piece.symbol()
+            if symbol in current_pieces:
+                current_pieces[symbol] += 1
+            else:
+                current_pieces[symbol] = 1
+
+        for symbol, count in starting_pieces.items():
+            current_count = current_pieces.get(symbol, 0)
+            captured_count = count - current_count
+            for _ in range(captured_count):
+                captured.append({
+                    'type': symbol.lower(),
+                    'color': 'white' if symbol.isupper() else 'black'
+                })
+        return captured
 
     def is_game_over(self) -> bool:
         return self.board.is_game_over()

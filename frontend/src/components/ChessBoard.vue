@@ -101,11 +101,12 @@ const movePiece = async (from: string, to: string) => {
     // Update the board state
     pieces.value = data.board_state;
   } else {
+    // Handle invalid move
     console.error('Invalid move:', data.message);
   }
 };
 
-// refresh the board every 10 seconds
+// refresh the board on clicking the refresh button
 
 const resetPieces = async () => {
   try {
@@ -135,6 +136,14 @@ const resetPieces = async () => {
    </div>
    <h2>Current Turn: {{ turn }}</h2>
    <button class="refresh-btn" @click="resetPieces">Refresh Board</button>
+   <!-- <h3 class="captured-title">White Captured Pieces </h3>
+   <div v-for="piece in whiteCapturedPieces" :key="piece" class="captured wp">
+     {{ piece }}
+    </div>
+    <h3 class="captured-title t2">Black Captured Pieces</h3>
+   <div v-for="piece in blackCapturedPieces" :key="piece" class="captured bp">
+     {{ piece }}
+    </div> -->
 </template>
 
 <style scoped>
@@ -150,7 +159,7 @@ const resetPieces = async () => {
   top: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8)0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
 
 .square {
@@ -195,8 +204,8 @@ const resetPieces = async () => {
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
 }
-
 /* .coord {
   position: absolute;
   font-size: 0.6rem;

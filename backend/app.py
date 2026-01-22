@@ -5,6 +5,7 @@ from chess_engine import ChessEngine
 app = Flask(__name__)
 CORS(app)
 game = ChessEngine()
+captured_pieces = [] # Empty list to track captured pieces
 
 @app.route('/board', methods=['GET'])
 def get_board():
@@ -20,6 +21,15 @@ def make_move():
     else:
         return jsonify({'status': 'error', 'message': 'Invalid move'})
     
+# @app.route('/legal_moves', methods=['GET'])
+# def legal_moves():
+#     moves = [move.uci() for move in game.board.legal_moves]
+#     return jsonify({'legal_moves': moves})
+
+@app.route('/captured-pieces', methods=['GET'])
+def captured_pieces():
+    return jsonify({'captured-pieces': game.get_captured_pieces()})
+
 @app.route('/reset', methods=['POST'])
 def reset_game():
     global game
