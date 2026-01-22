@@ -103,6 +103,24 @@ const movePiece = async (from: string, to: string) => {
   }
 };
 
+// refresh the board every 10 seconds
+
+const resetPieces = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/reset', {
+      method: 'POST',
+    });
+    const data = await response.json();
+    if (data.status === 'success') {
+      pieces.value = data.board_state;
+      console.log('Board reset:', pieces.value);
+    } else {
+      console.error('Error resetting board:', data.message);
+    }
+  } catch (error) {
+    console.error('Error resetting board:', error);
+  }
+};
 </script>
 
 <template>
@@ -111,47 +129,8 @@ const movePiece = async (from: string, to: string) => {
       <span v-if="pieceAt(index)" class="piece" :class="pieceAt(index)!.color">{{ pieceSymbol(pieceAt(index)!) }}</span>
       <!-- <small class="coord">{{ indexToSquare(index) }}</small> -->
      </div>
-
    </div>
-
-   <!-- <div class="black-pieces">
-    <span class="pawns pawn1">&#9823;</span>
-    <span class="pawns pawn2">&#9823;</span>
-    <span class="pawns pawn3">&#9823;</span>
-    <span class="pawns pawn4">&#9823;</span>
-    <span class="pawns pawn5">&#9823;</span>
-    <span class="pawns pawn6">&#9823;</span>
-    <span class="pawns pawn7">&#9823;</span>
-    <span class="pawns pawn8">&#9823;</span>
-
-    <span class="ryl-pcs king">&#9818;</span>
-    <span class="ryl-pcs queen">&#9819;</span>
-    <span class="ryl-pcs rook1">&#9820;</span>
-    <span class="ryl-pcs rook2">&#9820;</span>
-    <span class="ryl-pcs bishop1">&#9821;</span>
-    <span class="ryl-pcs bishop2">&#9821;</span>
-    <span class="ryl-pcs knight1">&#9822;</span>
-    <span class="ryl-pcs knight2">&#9822;</span>
-   </div>
-   <div class="white-pieces">
-    <span class="w-pawns w-pawn1">&#9823;</span>
-    <span class="w-pawns w-pawn2">&#9823;</span>
-    <span class="w-pawns w-pawn3">&#9823;</span>
-    <span class="w-pawns w-pawn4">&#9823;</span>
-    <span class="w-pawns w-pawn5">&#9823;</span>
-    <span class="w-pawns w-pawn6">&#9823;</span>
-    <span class="w-pawns w-pawn7">&#9823;</span>
-    <span class="w-pawns w-pawn8">&#9823;</span>
-
-    <span class="w-ryl-pcs w-king">&#9818;</span>
-    <span class="w-ryl-pcs w-queen">&#9819;</span>
-    <span class="w-ryl-pcs w-rook1">&#9820;</span>
-    <span class="w-ryl-pcs w-rook2">&#9820;</span>
-    <span class="w-ryl-pcs w-bishop1">&#9821;</span>
-    <span class="w-ryl-pcs w-bishop2">&#9821;</span>
-    <span class="w-ryl-pcs w-knight1">&#9822;</span>
-    <span class="w-ryl-pcs w-knight2">&#9822;</span>
-   </div> -->
+   <button class="refresh-btn" @click="resetPieces">Refresh Board</button>
 </template>
 
 <style scoped>
@@ -200,7 +179,19 @@ const movePiece = async (from: string, to: string) => {
   outline: 3px solid #3b82f6;
   outline-offset: -3px;
 }
-
+.refresh-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 7%;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
 
 /* .coord {
   position: absolute;

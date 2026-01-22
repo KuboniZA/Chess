@@ -19,6 +19,12 @@ def make_move():
         return jsonify({'status': 'success', 'board_state': game.get_board_state()})
     else:
         return jsonify({'status': 'error', 'message': 'Invalid move'})
+    
+@app.route('/reset', methods=['POST'])
+def reset_game():
+    global game
+    game = ChessEngine()
+    return jsonify({'status': 'success', 'board_state': game.get_board_state()})
 
 @app.route('/is_game_over', methods=['GET'])
 def is_game_over():
