@@ -29,7 +29,7 @@ def make_move():
 @app.route('/captured-pieces', methods=['GET'])
 def captured_pieces():
     return jsonify({
-        # 'captured-pieces': game.get_captured_pieces(),
+        'captured-pieces': game.get_captured_pieces(),
         'white-captured': [p for p in game.get_captured_pieces() if p['color'] == 'white'],
         'black-captured': [p for p in game.get_captured_pieces() if p['color'] == 'black']
         })
