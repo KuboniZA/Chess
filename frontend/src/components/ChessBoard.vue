@@ -2,6 +2,7 @@
 import { ref, onMounted, } from 'vue';
 import InvalidMove from './InvalidMove.vue';
 import CapturedPieces from './CapturedPieces.vue';
+import PomotePieceModal from './PomotePieceModal.vue';
 
 // Piece visibility and positions
 
@@ -88,6 +89,12 @@ const errorMessage = ref<string | null>(null);
 const childRef = ref<InstanceType<typeof CapturedPieces> | null>(null);
 
 const movePiece = async (from: string, to: string) => {
+  if (selectedPiece.value && isPromotionMove(selectedPiece.value, to)) {
+    pendingPromotionMove.value = { from, to };
+    showPromotionModal.value = true;
+    return;
+  }
+
   const move = `${from}${to}`;
 
   const response = await fetch('http://127.0.0.1:5000/move', {
@@ -99,15 +106,15 @@ const movePiece = async (from: string, to: string) => {
   });
 
   const data = await response.json();
+
   if (data.status === 'success') {
     // Update the board state
     pieces.value = data.board_state;
     turn.value = turn.value === 'White' ? 'Black' : 'White';
     childRef.value?.fetchCapturedPieces();
-    console.log('Move successful:', pieces.value);
+    // console.log('Move successful:', pieces.value);
   } else {
-    // Handle invalid move
-    console.error('Invalid move:', data.message);
+    // console.error('Invalid move:', data.message);
     errorMessage.value = data.message;
 
   }
@@ -134,6 +141,50 @@ const resetPieces = async () => {
   }
 };
 
+// Piece promotion code:
+
+const showPromotionModal = ref(false);
+const pendingPromotionMove = ref<{
+  from: string;
+  to: string
+} | null>(null);
+
+const isPromotionMove = (piece: Piece, to: string) => {
+  if (piece.type !== 'p') return false;
+
+  const rank = to[1];
+  return (
+    (piece.color === 'white' && rank === '8') ||
+    (piece.color === 'black' && rank === '1')
+  );
+};
+
+const promotePiece = async (piece: 'q' | 'r' | 'b' | 'n') => {
+  if (!pendingPromotionMove.value) return;
+
+  const { from, to } = pendingPromotionMove.value;
+  showPromotionModal.value = false;
+  pendingPromotionMove.value = null;
+
+  const move = `${from}${to}${piece}`
+
+  const response = await fetch('http://127.0.0.1:5000/move', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ move }),
+  });
+
+  const data = await response.json();
+
+  if (data.status === 'success') {
+    pieces.value = data.board_state;
+    turn.value = data.turn;
+    childRef.value?.fetchCapturedPieces();
+  } else {
+    errorMessage.value = data.message;
+  }
+};
+
 onMounted(() => {
   fetchPieces();
 });
@@ -142,6 +193,7 @@ onMounted(() => {
 <template>
   <InvalidMove v-if="errorMessage" :message="errorMessage" @close="errorMessage = null" />
   <CapturedPieces ref="childRef"/>
+  <PomotePieceModal v-if="showPromotionModal" @select="promotePiece" />
    <div class="chess-board-container">
      <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index), selected: selectedSquare === indexToSquare(index) }" @click="onSquareClick(index)">
       <span v-if="pieceAt(index)" class="piece" :class="pieceAt(index)!.color">{{ pieceSymbol(pieceAt(index)!) }}</span>

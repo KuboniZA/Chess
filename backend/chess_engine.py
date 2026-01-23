@@ -57,8 +57,4 @@ class ChessEngine:
                     'symbol': piece_symbols[symbol] # Added this line along with its array to make captured pieces visible/
                 })
         return captured
-
-    def is_game_over(self) -> bool:
-        return self.board.is_game_over()
     
-# Create a Pawn promotion example
