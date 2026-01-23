@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { ref, onMounted, } from 'vue';
 
+interface CapturedPiece {
+  type: string;
+  color: 'white' | 'black';
+  symbol: string;
+}
+
+
 // captured pieces display
-const whiteCapturedPieces = ref<string[]>([]);
-const blackCapturedPieces = ref<string[]>([]);
+const whiteCapturedPieces = ref<CapturedPiece[]>([]);
+const blackCapturedPieces = ref<CapturedPiece[]>([]);
 
 const fetchCapturedPieces = async () => {
   try {
@@ -11,9 +18,11 @@ const fetchCapturedPieces = async () => {
       method: 'GET',
     });
     const data = await response.json();
-    whiteCapturedPieces.value = data['captured-pieces'].white;
-    blackCapturedPieces.value = data['captured-pieces'].black;
-    console.log('Fetched captured pieces:', data);
+    whiteCapturedPieces.value = data['white-captured'];
+    blackCapturedPieces.value = data['black-captured'];
+    // console.log('Fetched captured pieces:', data);
+    console.log('White captured pieces:', data['white-captured']);
+    console.log('Black captured pieces:', data['black-captured']);
   } catch (error) {
     console.error('Error fetching captured pieces:', error);
   }
@@ -36,6 +45,7 @@ const resetCapturedPieces = async () => {
 onMounted(() => {
   fetchCapturedPieces();
 });
+
 defineExpose({
   fetchCapturedPieces,
   resetCapturedPieces
@@ -45,12 +55,12 @@ defineExpose({
 
 <template>
    <h3 class="captured-title">White Captured Pieces </h3>
-   <div v-for="piece in whiteCapturedPieces" :key="piece" class="captured wp">
-      {{ piece }}
+   <div v-for="(piece, index) in whiteCapturedPieces" :key="index" class="captured wp">
+      {{ piece.symbol }}
     </div>
     <h3 class="captured-title t2">Black Captured Pieces</h3>
-   <div v-for="piece in blackCapturedPieces" :key="piece" class="captured bp">
-      {{ piece }}
+   <div v-for="(piece, index) in blackCapturedPieces" :key="index" class="captured bp">
+      {{ piece.symbol }}
     </div>
 </template>
 
@@ -72,6 +82,21 @@ defineExpose({
   top: 9%;
   font-size: 3.5rem;
   user-select: none;
+}
+
+.captured.wp {
+  left: 7%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 10rem;
+}
+.captured.bp {
+  left: 80%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 10rem;
 }
 
 </style>

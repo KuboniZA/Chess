@@ -149,14 +149,6 @@ const resetPieces = async () => {
    </div>
    <h2>Current Turn: {{ turn }}</h2>
    <button class="refresh-btn" @click="resetPieces">Refresh Board</button>
-   <!-- <h3 class="captured-title">White Captured Pieces </h3>
-   <div v-for="piece in whiteCapturedPieces" :key="piece" class="captured wp">
-     {{ piece }}
-    </div>
-    <h3 class="captured-title t2">Black Captured Pieces</h3>
-   <div v-for="piece in blackCapturedPieces" :key="piece" class="captured bp">
-     {{ piece }}
-    </div> -->
 </template>
 
 <style scoped>

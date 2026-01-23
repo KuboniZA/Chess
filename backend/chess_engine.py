@@ -32,6 +32,12 @@ class ChessEngine:
             'P': 8, 'R': 2, 'N': 2, 'B': 2, 'Q': 1, 'K': 1,
             'p': 8, 'r': 2, 'n': 2, 'b': 2, 'q': 1, 'k': 1
         }
+
+        piece_symbols = {
+            'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔',
+            'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚'
+        }
+
         current_pieces = {}
 
         for piece in self.board.piece_map().values():
@@ -47,9 +53,12 @@ class ChessEngine:
             for _ in range(captured_count):
                 captured.append({
                     'type': symbol.lower(),
-                    'color': 'white' if symbol.isupper() else 'black'
+                    'color': 'white' if symbol.isupper() else 'black',
+                    'symbol': piece_symbols[symbol] # Added this line along with its array to make captured pieces visible/
                 })
         return captured
 
     def is_game_over(self) -> bool:
         return self.board.is_game_over()
+    
+# Create a Pawn promotion example
