@@ -9,7 +9,10 @@ captured_pieces = [] # Empty list to track captured pieces
 
 @app.route('/board', methods=['GET'])
 def get_board():
-    return jsonify({'board_state': game.get_board_state()})
+    return jsonify({
+        'board_state': game.get_board_state(),
+        'turn': 'White' if game.board.turn else 'Black'
+        })
 
 @app.route('/move', methods=['POST'])
 def make_move():

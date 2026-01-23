@@ -18,6 +18,7 @@ const fetchPieces = async () => {
     const response = await fetch('http://127.0.0.1:5000/board');
     const data = await response.json();
     pieces.value = data.board_state;
+    turn.value = data.turn
     console.log('Fetched pieces:', pieces.value);
   } catch (error) {
     console.error('Error fetching pieces:', error);
@@ -135,8 +136,6 @@ const resetPieces = async () => {
 
 onMounted(() => {
   fetchPieces();
-  // ********************** If turn is white and user refreshes, turn becomes black. Must find a fix. ************************
-  turn.value = turn.value === 'White' ? 'Black' : 'White';
 });
 </script>
 
