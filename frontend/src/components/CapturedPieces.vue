@@ -54,14 +54,20 @@ defineExpose({
 </script>
 
 <template>
-   <h3 class="captured-title">White Captured Pieces </h3>
-   <div v-for="(piece, index) in whiteCapturedPieces" :key="index" class="captured wp">
+  <h3 class="captured-title">White Captured Pieces </h3>
+   <div class="captured-container wp">
+    <span v-for="(piece, index) in whiteCapturedPieces" :key="index" class="captured-white">
       {{ piece.symbol }}
-    </div>
-    <h3 class="captured-title t2">Black Captured Pieces</h3>
-   <div v-for="(piece, index) in blackCapturedPieces" :key="index" class="captured bp">
+   </span>
+  </div>
+
+  <h3 class="captured-title t2">Black Captured Pieces</h3>
+   <div class="captured-container bp">
+    <span v-for="(piece, index) in blackCapturedPieces" :key="index" class="captured-black">
       {{ piece.symbol }}
-    </div>
+    </span>
+  </div>
+
 </template>
 
 <style scoped>
@@ -77,26 +83,25 @@ defineExpose({
   left: 80%;
 }
 
-.captured {
+.captured-container {
   position: absolute;
+  display: flex;
+  flex-wrap: wrap;
   top: 9%;
+  gap: 0.5rem;
   font-size: 3.5rem;
   user-select: none;
 }
 
-.captured.wp {
+.captured-container.wp {
   left: 7%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  width: 10rem;
+  width: fit-content;
+  height: fit-content;
 }
-.captured.bp {
+.captured-container.bp {
   left: 80%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  width: 10rem;
+  width: fit-content;
+  height: fit-content;
 }
 
 </style>

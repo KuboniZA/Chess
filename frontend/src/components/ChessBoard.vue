@@ -24,10 +24,6 @@ const fetchPieces = async () => {
   }
 };
 
-onMounted(() => {
-  fetchPieces();
-});
-
 const isDark = (index: number) => {
   const row = Math.floor(index / 8);
   const col = index % 8;
@@ -136,6 +132,12 @@ const resetPieces = async () => {
     console.error('Error resetting board:', error);
   }
 };
+
+onMounted(() => {
+  fetchPieces();
+  // ********************** If turn is white and user refreshes, turn becomes black. Must find a fix. ************************
+  turn.value = turn.value === 'White' ? 'Black' : 'White';
+});
 </script>
 
 <template>
