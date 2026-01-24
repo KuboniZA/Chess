@@ -1,4 +1,5 @@
 import chess
+import random
 
 class ChessEngine:
     def __init__(self):
@@ -58,3 +59,71 @@ class ChessEngine:
                 })
         return captured
     
+    def make_computer_move(self, difficulty: str):
+        legal_moves = list(self.board.legal_moves)
+        if not legal_moves:
+            return
+        
+        if difficulty == "beginner":
+            move = random.choice(legal_moves)
+        elif difficulty == "intermediate":
+            captures = [m for m in legal_moves if self.board.is_capture(m)]
+            move = random.choice(captures) if captures else random.choice(legal_moves)
+        elif difficulty == "hard":
+            move = self.minimax_root(depth=2)
+        else:
+            move = random.choice(legal_moves)
+
+        self.board.push(move)
+
+    def evaluate_board_state(self):
+        values = {
+            chess.PAWN: 1,
+            chess.KNIGHT: 3,
+            chess.BISHOP: 3,
+            chess.ROOK: 5,
+            chess.QUEEN: 9,
+        }
+        score = 0
+        for piece_type, value in values.items():
+            score += len(self.board.pieces(piece_type, chess.WHITE)) * value
+            score -= len(self.board.pieces(piece_type, chess.BLACK)) * value
+        return score
+    
+    def minimax(self, depth, maximizing):
+        if depth == 0 or self.board.is_game_over():
+            return self.evaluate_board_state()
+        
+        if maximizing:
+            max_eval = -9999
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                eval = self.minimax(depth -1, False)
+                self.board.pop()
+                max_eval = max(max_eval, eval)
+            return max_eval
+        else:
+            min_eval = 9999
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                eval = self.minimax(depth - 1, True)
+                self.board.pop()
+                min_eval = min(min_eval, eval)
+            return min_eval
+        
+    def minimax_root(self, depth):
+        best_move = None
+        best_value = -9999
+
+        for move in self.board.legal_moves:
+            self.board.push(move)
+            value = self.minimax(depth - 1, False)
+            self.board.pop()
+
+            if value > best_value:
+                best_value = value
+                best_move = move
+        return best_move
+
+    
+

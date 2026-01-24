@@ -126,6 +126,14 @@ const movePiece = async (from: string, to: string) => {
     childRef.value?.fetchCapturedPieces();
     updateCheckState(data)
     // console.log('Move successful:', pieces.value);
+
+    // Computer's turn
+    if (turn.value === 'Black') {
+      setTimeout(async () => {
+        await fetchPieces();
+        childRef.value?.fetchCapturedPieces();
+      }, 1500);
+    }
   } else {
     // console.error('Invalid move:', data.message);
     errorMessage.value = data.message;
@@ -195,6 +203,14 @@ const promotePiece = async (piece: 'q' | 'r' | 'b' | 'n') => {
     turn.value = data.turn;
     childRef.value?.fetchCapturedPieces();
     updateCheckState(data)
+
+    // Computer's turn
+    if (turn.value === 'Black') {
+      setTimeout(async () => {
+        await fetchPieces();
+        childRef.value?.fetchCapturedPieces();
+      }, 1500);
+    }
   } else {
     errorMessage.value = data.message;
   }
