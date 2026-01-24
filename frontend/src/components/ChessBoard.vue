@@ -3,6 +3,7 @@ import { ref, onMounted, } from 'vue';
 import InvalidMove from './InvalidMove.vue';
 import CapturedPieces from './CapturedPieces.vue';
 import PomotePieceModal from './PomotePieceModal.vue';
+import InCheck from './InCheck.vue';
 
 // Piece visibility and positions
 
@@ -12,6 +13,16 @@ type Piece = {
   position: string;
 };
 
+type MoveResponse = {
+  status: 'success' | 'error';
+  board_state?: Piece[];
+  turn?: 'White' | 'Black';
+  check?: boolean;
+  checkmate?: boolean;
+  message?: string;
+};
+
+
 const pieces = ref<Piece[]>([]);
 
 const fetchPieces = async () => {
@@ -20,6 +31,7 @@ const fetchPieces = async () => {
     const data = await response.json();
     pieces.value = data.board_state;
     turn.value = data.turn
+    updateCheckState(data)
     console.log('Fetched pieces:', pieces.value);
   } catch (error) {
     console.error('Error fetching pieces:', error);
@@ -112,6 +124,7 @@ const movePiece = async (from: string, to: string) => {
     pieces.value = data.board_state;
     turn.value = turn.value === 'White' ? 'Black' : 'White';
     childRef.value?.fetchCapturedPieces();
+    updateCheckState(data)
     // console.log('Move successful:', pieces.value);
   } else {
     // console.error('Invalid move:', data.message);
@@ -133,6 +146,7 @@ const resetPieces = async () => {
       console.log('Board reset:', pieces.value);
       turn.value = 'White'; // Reset turn to White
       childRef.value?.resetCapturedPieces();
+      updateCheckState(data)
     } else {
       console.error('Error resetting board:', data.message);
     }
@@ -180,10 +194,36 @@ const promotePiece = async (piece: 'q' | 'r' | 'b' | 'n') => {
     pieces.value = data.board_state;
     turn.value = data.turn;
     childRef.value?.fetchCapturedPieces();
+    updateCheckState(data)
   } else {
     errorMessage.value = data.message;
   }
 };
+
+// Check popup
+
+const inCheck = ref(false);
+const checkType = ref<'Check' | 'Checkmate'>('Check');
+
+const updateCheckState = (data: MoveResponse) => {
+  if (data.check === undefined && data.checkmate === undefined) {
+    return; // This will make sure the popup stays open on refresh.
+  }
+  if (data.checkmate) {
+    inCheck.value = true;
+    checkType.value = 'Checkmate'
+  } else if (data.check) {
+    inCheck.value = true;
+    checkType.value = 'Check'
+  } else {
+    inCheck.value = false;
+  }
+};
+
+// function onPlayerClick(square: Square) {
+//   inCheck.value = false;
+//   handleSquareClick(square);
+// }
 
 onMounted(() => {
   fetchPieces();
@@ -194,6 +234,8 @@ onMounted(() => {
   <InvalidMove v-if="errorMessage" :message="errorMessage" @close="errorMessage = null" />
   <CapturedPieces ref="childRef"/>
   <PomotePieceModal v-if="showPromotionModal" @select="promotePiece" />
+  <InCheck :show="inCheck" :message="checkType" />
+
    <div class="chess-board-container">
      <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index), selected: selectedSquare === indexToSquare(index) }" @click="onSquareClick(index)">
       <span v-if="pieceAt(index)" class="piece" :class="pieceAt(index)!.color">{{ pieceSymbol(pieceAt(index)!) }}</span>

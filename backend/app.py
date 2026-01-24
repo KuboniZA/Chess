@@ -11,7 +11,9 @@ captured_pieces = [] # Empty list to track captured pieces
 def get_board():
     return jsonify({
         'board_state': game.get_board_state(),
-        'turn': 'White' if game.board.turn else 'Black'
+        'turn': 'White' if game.board.turn else 'Black',
+        'check': game.board.is_check() if game.board.move_stack else False,
+        'checkmate': game.board.is_checkmate() if game.board.move_stack else False
         })
 
 @app.route('/move', methods=['POST'])
@@ -20,7 +22,13 @@ def make_move():
     move_uci = data['move']
     success = game.make_move(move_uci)
     if success:
-        return jsonify({'status': 'success', 'board_state': game.get_board_state()})
+        return jsonify({
+            'status': 'success', 
+            'board_state': game.get_board_state(),
+            'turn': 'white' if game.board.turn else 'Black',
+            'check': game.board.is_check(),
+            'checkmate': game.board.is_checkmate()
+            })
     else:
         return jsonify({'status': 'error', 'message': 'Invalid move'})
     
@@ -41,7 +49,12 @@ def captured_pieces():
 def reset_game():
     global game
     game = ChessEngine()
-    return jsonify({'status': 'success', 'board_state': game.get_board_state()})
+    return jsonify({
+        'status': 'success', 
+        'board_state': game.get_board_state(),
+        'check' : False,
+        'checkmate': False
+        })
 
 @app.route('/reset-captured', methods=['POST'])
 def reset_captured():
