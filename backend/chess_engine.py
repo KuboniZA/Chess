@@ -102,5 +102,28 @@ class ChessEngine:
                 self.board.pop()
                 max_eval = max(max_eval, eval)
             return max_eval
+        else:
+            min_eval = 9999
+            for move in self.board.legal_moves:
+                self.board.push(move)
+                eval = self.minimax(depth - 1, True)
+                self.board.pop()
+                min_eval = min(min_eval, eval)
+            return min_eval
+        
+    def minimax_root(self, depth):
+        best_move = None
+        best_value = -9999
+
+        for move in self.board.legal_moves:
+            self.board.push(move)
+            value = self.minimax(depth - 1, False)
+            self.board.pop()
+
+            if value > best_value:
+                best_value = value
+                best_move = move
+        return best_move
+
     
 
