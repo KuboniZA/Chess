@@ -28,11 +28,15 @@ def make_move():
     data = request.json
     move_uci = data['move']
     success = game.make_move(move_uci)
+
     if success:
         current_turn = "white" if game.board.turn else "black"
         if game_mode[current_turn] == "ai" and not game.board.is_game_over():
-            time.sleep(2)
-            game.make_computer_move(game_mode["difficulty"])
+            threading.Thread(
+                target=computer_move_delay,
+                args=(game_mode['difficulty'],),
+                daemon=True
+            ).start()
         return jsonify({
             'status': 'success', 
             'board_state': game.get_board_state(),
@@ -43,10 +47,10 @@ def make_move():
     else:
         return jsonify({'status': 'error', 'message': 'Invalid move'})
     
-# @app.route('/legal_moves', methods=['GET'])
-# def legal_moves():
-#     moves = [move.uci() for move in game.board.legal_moves]
-#     return jsonify({'legal_moves': moves})
+def computer_move_delay(difficulty):
+    time.sleep(2)
+    if not game.board.is_game_over():
+        game.make_computer_move(difficulty)
 
 @app.route('/captured-pieces', methods=['GET'])
 def captured_pieces():

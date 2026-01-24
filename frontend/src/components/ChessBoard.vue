@@ -126,6 +126,12 @@ const movePiece = async (from: string, to: string) => {
     childRef.value?.fetchCapturedPieces();
     updateCheckState(data)
     // console.log('Move successful:', pieces.value);
+    if (turn.value === 'Black') {
+      setTimeout(async () => {
+        await fetchPieces();
+        childRef.value?.fetchCapturedPieces();
+      }, 2000);
+    }
   } else {
     // console.error('Invalid move:', data.message);
     errorMessage.value = data.message;
