@@ -130,7 +130,7 @@ const movePiece = async (from: string, to: string) => {
       setTimeout(async () => {
         await fetchPieces();
         childRef.value?.fetchCapturedPieces();
-      }, 2000);
+      }, 1500);
     }
   } else {
     // console.error('Invalid move:', data.message);

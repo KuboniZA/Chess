@@ -48,7 +48,7 @@ def make_move():
         return jsonify({'status': 'error', 'message': 'Invalid move'})
     
 def computer_move_delay(difficulty):
-    time.sleep(2)
+    time.sleep(1.5)
     if not game.board.is_game_over():
         game.make_computer_move(difficulty)
 
