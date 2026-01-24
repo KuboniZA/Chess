@@ -40,7 +40,7 @@ def make_move():
         return jsonify({
             'status': 'success', 
             'board_state': game.get_board_state(),
-            'turn': 'white' if game.board.turn else 'Black',
+            'turn': 'White' if game.board.turn else 'Black',
             'check': game.board.is_check(),
             'checkmate': game.board.is_checkmate()
             })
