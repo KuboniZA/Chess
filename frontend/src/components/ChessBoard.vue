@@ -243,7 +243,7 @@ onMounted(() => {
      </div>
    </div>
    <h2>Current Turn: {{ turn }}</h2>
-   <button class="refresh-btn" @click="resetPieces">Refresh Board</button>
+   <button class="refresh-btn" @click="resetPieces">Reset Board</button>
 </template>
 
 <style scoped>
