@@ -4,6 +4,7 @@ import InvalidMove from './InvalidMove.vue';
 import CapturedPieces from './CapturedPieces.vue';
 import PomotePieceModal from './PomotePieceModal.vue';
 import InCheck from './InCheck.vue';
+import SelectDifficulty from './SelectDifficulty.vue';
 
 // Piece visibility and positions
 
@@ -241,6 +242,21 @@ const updateCheckState = (data: MoveResponse) => {
 //   handleSquareClick(square);
 // }
 
+type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+
+const showDifficultyModal = ref(true)
+const difficulty = ref<Difficulty>('beginner');
+
+function onDifficultySelected(value: Difficulty) {
+  difficulty.value = value;
+  showDifficultyModal.value = false;
+  startGame();
+}
+
+function startGame() {
+  console.log('Starting game with difficulty:', difficulty.value)
+}
+
 onMounted(() => {
   fetchPieces();
 });
@@ -251,6 +267,7 @@ onMounted(() => {
   <CapturedPieces ref="childRef"/>
   <PomotePieceModal v-if="showPromotionModal" @select="promotePiece" />
   <InCheck :show="inCheck" :message="checkType" />
+  <SelectDifficulty v-if="showDifficultyModal" @selected="onDifficultySelected" />
 
    <div class="chess-board-container">
      <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index), selected: selectedSquare === indexToSquare(index) }" @click="onSquareClick(index)">

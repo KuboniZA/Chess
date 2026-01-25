@@ -9,8 +9,8 @@ CORS(app)
 game = ChessEngine()
 captured_pieces = [] # Empty list to track captured pieces
 game_mode = {
-    "white": "human",
-    "black": "ai",
+    "White": "human",
+    "Black": "ai",
     "difficulty": "beginner"
 }
 
@@ -22,6 +22,21 @@ def get_board():
         'check': game.board.is_check() if game.board.move_stack else False,
         'checkmate': game.board.is_checkmate() if game.board.move_stack else False
         })
+
+@app.route('/game-mode', methods=['GET'])
+def get_game_mode():
+    return jsonify(game_mode)
+
+@app.route('/game-mode', methods=['POST'])
+def set_game_mode():
+    """This allows the user to select the difficulty as well as choose the colour to play as."""
+    data = request.json
+    game_mode.update({
+        'White': data.get('White', game_mode['White']),
+        'Black': data.get('Black', game_mode['Black']),
+        'difficulty': data.get('difficulty', game_mode['difficulty']),
+    })
+    return jsonify(game_mode)
 
 @app.route('/move', methods=['POST'])
 def make_move():
