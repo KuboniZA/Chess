@@ -23,19 +23,17 @@ def get_board():
         'checkmate': game.board.is_checkmate() if game.board.move_stack else False
         })
 
-@app.route('/game-mode', methods=['GET'])
-def get_game_mode():
-    return jsonify(game_mode)
+# @app.route('/game-mode', methods=['GET'])
+# def get_game_mode():
+#     return jsonify(game_mode)
 
 @app.route('/game-mode', methods=['POST'])
 def set_game_mode():
     """This allows the user to select the difficulty as well as choose the colour to play as."""
     data = request.json
-    game_mode.update({
-        'White': data.get('White', game_mode['White']),
-        'Black': data.get('Black', game_mode['Black']),
-        'difficulty': data.get('difficulty', game_mode['difficulty']),
-    })
+    game_mode['White'] = data['white']
+    game_mode['Black'] = data['black']
+    game_mode['difficulty'] = data['difficulty']
     return jsonify(game_mode)
 
 @app.route('/move', methods=['POST'])
@@ -45,7 +43,7 @@ def make_move():
     success = game.make_move(move_uci)
 
     if success:
-        current_turn = "white" if game.board.turn else "black"
+        current_turn = "White" if game.board.turn else "Black"
         if game_mode[current_turn] == "ai" and not game.board.is_game_over():
             threading.Thread(
                 target=computer_move_delay,

@@ -242,13 +242,21 @@ const updateCheckState = (data: MoveResponse) => {
 //   handleSquareClick(square);
 // }
 
+type PlayerType = 'human' | 'ai';
 type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
-const showDifficultyModal = ref(true)
-const difficulty = ref<Difficulty>('beginner');
+interface GameMode {
+  white: PlayerType;
+  black: PlayerType;
+  difficulty: Difficulty;
+}
 
-function onDifficultySelected(value: Difficulty) {
-  difficulty.value = value;
+const showDifficultyModal = ref(true)
+
+const difficulty = ref<GameMode | null>(null);
+
+function onDifficultySelected(payload: GameMode): void {
+  difficulty.value = payload;
   showDifficultyModal.value = false;
   startGame();
 }
@@ -267,7 +275,7 @@ onMounted(() => {
   <CapturedPieces ref="childRef"/>
   <PomotePieceModal v-if="showPromotionModal" @select="promotePiece" />
   <InCheck :show="inCheck" :message="checkType" />
-  <SelectDifficulty v-if="showDifficultyModal" @selected="onDifficultySelected" />
+  <SelectDifficulty v-if="showDifficultyModal" @start-game="onDifficultySelected" />
 
    <div class="chess-board-container">
      <div v-for="(_, index) in 64" :key="index" class="square" :class="{ dark: isDark(index), selected: selectedSquare === indexToSquare(index) }" @click="onSquareClick(index)">

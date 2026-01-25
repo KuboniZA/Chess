@@ -1,28 +1,48 @@
 <script setup lang="ts">
-  import {ref, onMounted } from 'vue';
+  import { ref } from 'vue';
   type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+  type PlayerType = 'human' | 'ai'
 
   const emit = defineEmits<{
-    (e: 'selected', difficulty: Difficulty): void;
+    (e: 'start-game', payload: {
+      white: PlayerType;
+      black: PlayerType;
+      difficulty: Difficulty;
+    }): void;
   }>();
 
-  const selectedDifficulty = ref<Difficulty>('beginner')
+  const selectedDifficulty = ref<Difficulty>('beginner');
+  const whitePlayer = ref<PlayerType>('human');
+  const blackPlayer = ref<PlayerType>('ai');
 
-  onMounted(async () => {
-    const response = await fetch('http://127.0.0.1:5000/game-mode');
-    const data = await response.json();
-    selectedDifficulty.value = data.difficulty
-  })
 
-  async function confirmSelection() {
+  // onMounted(async () => {
+  //   const response = await fetch('http://127.0.0.1:5000/game-mode');
+  //   const data = await response.json();
+  //   selectedDifficulty.value = data.difficulty
+  // })
+
+  async function startGame() {
+    // Validate that there's at least one human
+    if (whitePlayer.value === 'ai' && blackPlayer.value === 'ai') {
+      alert('At least one player must be human');
+      return;
+    }
+
     await fetch('http://127.0.0.1:5000/game-mode', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }, // research headers man
       body: JSON.stringify({
+        white: whitePlayer.value,
+        black: blackPlayer.value,
         difficulty: selectedDifficulty.value
       })
     });
-    emit('selected', selectedDifficulty.value)
+    emit('start-game', {
+      white: whitePlayer.value,
+      black: blackPlayer.value,
+      difficulty: selectedDifficulty.value
+    })
   }
 
 
@@ -31,17 +51,46 @@
 <template>
   <div class="diff-modal">
     <div class="diff-content">
-      <h2>Wlecome to Chessmate!</h2>
+      <h2>Welcome to Chessmate!</h2>
+
       <p>Please select your difficulty:</p>
-      <select v-model="selectedDifficulty">
+      <!-- <select v-model="selectedDifficulty">
         <option value="beginner">Beginner</option>
-        <!-- <option>Beginner with Clock</option> -->
+        <option>Beginner with Clock</option>
         <option value="intermediate">Intermediate</option>
-        <!-- <option>Intermediate with Clock</option> -->
+        <option>Intermediate with Clock</option>
         <option value="advanced">Hard</option>
-        <!-- <option>Hard with Clock</option> -->
-      </select>
-      <button @click="confirmSelection">Start Game</button>
+        <option>Hard with Clock</option>
+      </select> -->
+
+      <!-- WILL NEED TO REFACTOR THE BELOW CODE -->
+
+      <label>
+        White:
+        <select v-model="whitePlayer">
+          <option value="human">Human</option>
+          <option value="ai">AI</option>
+        </select>
+      </label>
+
+      <label>
+        Black:
+        <select v-model="blackPlayer">
+          <option value="human">Human</option>
+          <option value="ai">AI</option>
+        </select>
+      </label>
+
+      <label v-if="whitePlayer === 'ai' || blackPlayer === 'ai'">
+        Computer Difficulty:
+        <select v-model="selectedDifficulty">
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </label>
+
+      <button @click="startGame">Start Game</button>
     </div>
   </div>
 
